@@ -56,3 +56,11 @@
     - extra_information: More information from user about how they are imagining this trip to add context (String)
 * Output (a JSON file)
     - response: LLM output response (String)
+
+## How to use chatbot.py
+### get_chatbot_response()
+* Function returns JSON object where key is "response" and the value is the corresponding LLM response
+* Input (String)
+    - user_message: The question asked by the user (String)
+* Output (a JSON file)
+    - response: LLM output response (String)
