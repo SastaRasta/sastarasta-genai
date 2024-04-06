@@ -182,8 +182,7 @@ When the information about the trip is shared, make an itinerary based on the fo
             }
     
     except Exception as e:
-        with open("create_itinerary_prompt.txt", "w") as f:
-            f.write(role_content + "\n" + prompt)
+        return {"response": role_content + "\n" + prompt}
 
 def suggest_trip_prompt(suggest_trip_input):
     # define docstring user inputs
@@ -262,8 +261,7 @@ def suggest_trip(suggest_trip_input):
         return {"response": completion.choices[0].message.content}
     
     except Exception as e:
-        with open("suggest_trip_prompt.txt", "w") as f:
-            f.write(role_content + "\n" + prompt)
+        return {"response": role_content + "\n" + prompt}
 
 # if __name__ == "__main__":
 #     response = suggest_trip(SUGGEST_TRIP_PROMPT_SAMPLE_INPUT)
