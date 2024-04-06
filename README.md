@@ -35,5 +35,5 @@
     - mode_of_transport: The transport used to travel around the destination location (String)
     - accomodation: The type of lodging where the travel group is staying (String)
     - activities: List of activities planned for the trip (List of Strings)
-    - day_wise_plan: A JSON where key is the day number and value is another JSON in which key is a tuple of 2 integers that represent time and the value is the name of the activity. The first value in tuple is activity start time and second value is end time (JSON of Integer key and JSON value of Integer tuple of size 2 for ke and String as value)
+    - day_wise_plan: A JSON where key is the day number and value is another JSON in which key is a tuple of 2 integers that represent time and the value is the name of the activity. The first value in tuple is activity start time and second value is end time (JSON of Integer key and JSON value of Integer tuple of size 2 for key and String as value)
     - extra_information: Extra information for adding context to trip planning for nuanced details (String)
