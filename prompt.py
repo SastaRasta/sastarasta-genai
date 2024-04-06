@@ -1,6 +1,5 @@
-from openai import OpenAI
+from openai import OpenAI, APIConnectionError
 from re import match
-
 
 
 ITINERARY_GENERATION_PROMPT_SAMPLE_INPUT = {
@@ -45,13 +44,18 @@ ITINERARY_GENERATION_PROMPT_SAMPLE_INPUT = {
 
 
 SUGGEST_TRIP_PROMPT_SAMPLE_INPUT = {
-    "start_location": "New York",
-    "end_location": "Los Angeles",
-    "budget": 30000,
-    "start_date": "2024-04-14",
-    "end_date": "2024-04-16",
-    "group_size": 4,
-    "extra_information": "The group is traveling for a vacation and wants to explore the city. We want to go clubbing and shopping. We are looking for a mix of adventure and relaxation.",
+    "start_location": "Jabalpur",
+    "end_location": "Chicago",
+    "budget": 50000,
+    "start_date": "2024-04-08",
+    "end_date": "2024-04-15",
+    "group_size": 1,
+    "mode_of_arrival": ["Flight", "Train"],
+    # "mode_of_transport": ["Public Transport", "Rental Car"],
+    # "accommodation": ["Hotel", "Airbnb"],
+    # "objective": ["Convention", "Exploration"],
+    # "food_preference": ["Local", "Fast Food", "Italian", "Chinese"],
+    "extra_information": "I want to go to Chicago for a convention at a local museum. I want to explore the city and try out local food. Suggest a trip plan for me.",
 }
 
 
@@ -156,6 +160,94 @@ The format of the itinerary is as follows:
     a. Medical facilities available near the accommodation
     b. Local language of the destination 
     c. Frequent crimes that happen in that area along with crime rate
+
+Instead of returning the response as a markdown file, return an HTML response without enclosing it in triple backticks. For example:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Trip Itinerary</title>
+    </head>
+    <body>
+        <h2>Trip Itinerary</h1>
+        <ol>
+            <li>Basic Information:</li>
+            <ul>
+                <li>Start Location: New York</li>
+                <li>End Location: Los Angeles</li>
+                <li>Budget: 30000</li>
+                <li>Start Date: 2024-04-14</li>
+                <li>End Date: 2024-04-16</li>
+                <li>Group Size: 4</li>
+            </ul>
+            
+            <li>Travel Information:</li>
+            <ul>
+                <li>Mode of Arrival: Flight</li>
+                <li>Mode of Transport: Rental Car</li>
+                <li>Cost of Flight: Approximately 25000 INR (for 4 people round trip)</li>
+                <li>Cost of Rental Car: Depends on the model and duration of rental</li>
+            </ul>
+            
+            <li>Accommodation Information:</li>
+            <ul>
+                <li>Accommodation: Hotel Nova</li>
+                <li>Cost of Accommodation (2 nights): Approximately 5000 INR per room per night (for 2 rooms)</li>
+            </ul>
+            
+            <li>Activity Information:</li>
+            <ul>
+                <li>Activities: Sightseeing, Hiking, Shopping, Clubbing</li>
+                <li>Cost of Activities: Varies based on the chosen activities</li>
+            </ul>
+            
+            <li>Food Preferences:</li>
+            <ul>
+                <li>Vegan: Various options available nearby</li>
+                <li>Vegetarian: Various options available nearby</li>
+                <li>Chinese: Average cost per meal - 800 INR</li>
+                <li>Italian: Average cost per meal - 1000 INR</li>
+            </ul>
+            
+            <li>Important Documents:</li>
+            <ul>
+                <li>Travel tickets</li>
+                <li>ID proofs</li>
+                <li>Credit/Debit cards</li>
+                <li>These are essential documents to carry. They can be required at the airport, hotel check-in, and while dining.</li>
+            </ul>
+
+            <li>Timeline:</li>
+            <ul>
+                <li>Day 1:-</li>
+                <ul>
+                    <li>Arrive at New York Airport by 5 PM</li>
+                    <li>Flight to Los Angeles from 6 PM to 8 PM</li>
+                    <li>Check-in at Hotel Nova from 8 PM to 9 PM</li>
+                    <li>Dinner from 9 PM to 10 PM</li>
+                </ul>
+                <li>Day 2:-</li>
+                <ul>
+                    <li>Breakfast from 9 AM to 10 AM</li>
+                    <li>Sightseeing from 10 AM to 12 PM</li>
+                    <li>Lunch from 12 PM to 1 PM</li>
+                    <li>Hiking from 1 PM to 3 PM</li>
+                    <li>Snacks from 3 PM to 4 PM</li>
+                    <li>Dinner from 6 PM to 7 PM</li>
+                    <li>Clubbing from 10 PM onwards</li>
+                </ul>
+                <li>Day 3:-</li>
+                <ul>
+                    <li>Breakfast from 9 AM to 10 AM</li>
+                    <li>Shopping from 10 AM to 12 PM</li>
+                    <li>Lunch from 12 PM to 1 PM</li>
+                    <li>Snacks from 3 PM to 4 PM</li>
+                    <li>Reach Los Angeles Airport by 5 PM</li>
+                    <li>Flight to New York from 6 PM to 8 PM</li>
+                </ul>
+            </ul>
+        </ol>
+    </body>
+</html>
 """
 
     return ITINERARY_GENERATION_PROMPT
@@ -177,13 +269,10 @@ When the information about the trip is shared, make an itinerary based on the fo
             ]
         )
 
-        return {
-            "response": completion.choices[0].message.content
-            }
+        return {"response": completion.choices[0].message.content.replace("\n", "")}
     
-    except Exception as e:
-        with open("create_itinerary_prompt.txt", "w") as f:
-            f.write(role_content + "\n" + prompt)
+    except APIConnectionError as e:
+        return {"response": "Connection Error! Check internet connection"}
 
 def suggest_trip_prompt(suggest_trip_input):
     # define docstring user inputs
@@ -241,6 +330,68 @@ Given all this information suggest a trip plan for the group. The trip plan shou
     a. Medical facilities available near the accommodation
     b. Local language of the destination 
     c. Frequent crimes that happen in that area along with crime rate
+
+Instead of returning the response as a markdown file, return an HTML response without enclosing it in triple backticks. For example:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Trip Suggestion</title>
+    </head>
+    <body>
+        <h2>Trip Suggestion</h2>
+        <ol>
+            <li>Basic Information:</li>
+            <ul>
+                <li>Start Location: Jabalpur</li>
+                <li>End Location: Chicago</li>
+                <li>Budget: 50000 INR</li>
+                <li>Start Date: 2024-04-08</li>
+                <li>End Date: 2024-04-15</li>
+                <li>Group Size: 1</li>
+            </ul>
+            
+            <li>Travel Information:</li>
+            <ul>
+                <li>Mode of Arrival: Flight (approx. cost: 40000 INR), Train (approx. cost: 15000 INR)</li>
+                <li>Mode of Transport: Public Transport, Rental Car</li>
+            </ul>
+            
+            <li>Accommodation Information:</li>
+            <ul>
+                <li>Accommodation: Hotel (average cost: 5000 INR per night)</li>
+            </ul>
+            
+            <li>Activity Information:</li>
+            <ul>
+                <li>Attend the convention at a local museum</li>
+                <li>Explore the city of Chicago</li>
+            </ul>
+            
+            <li>Food Preferences:</li>
+            <ul>
+                <li>Local Food - Deep-dish pizza at Lou Malnati's (approx. cost: 1000 INR)</li>
+                <li>Fast Food - Grab a burger at Shake Shack (approx. cost: 800 INR)</li>
+                <li>Italian - Enjoy pasta at Quartino Ristorante (approx. cost: 1200 INR)</li>
+                <li>Chinese - Try authentic Chinese cuisine at MingHin Cuisine (approx. cost: 900 INR)</li>
+            </ul>
+            
+            <li>Important Documents:</li>
+            <ul>  
+                <li>Valid passport</li>  
+                <li>Visa for the USA</li>  
+                <li>Travel insurance</li>
+            </ul>
+        </ul>
+        
+        <li>Timeline:</li>
+        <ul>
+            <li>Day 1: Arrive in Chicago, check into the hotel, relax</li>
+            <li>Day 2: Attend the convention at the local museum, explore nearby area</li>
+            <li>Day 3-6: Explore different neighborhoods, try local foods, visit popular attractions</li>
+            <li>Day 7: Departure day, head back to Jabalpur</li>
+        </ul>
+    </body>
+</html>
 """
 
     return TRIP_SUGGESTION_PROMPT
@@ -259,13 +410,12 @@ def suggest_trip(suggest_trip_input):
             ]
         )
 
-        return {"response": completion.choices[0].message.content}
+        return {"response": completion.choices[0].message.content.replace("\n", "")}
     
-    except Exception as e:
-        with open("suggest_trip_prompt.txt", "w") as f:
-            f.write(role_content + "\n" + prompt)
+    except APIConnectionError as e:
+        return {"response": "Connection Error! Check internet connection"}
 
-# if __name__ == "__main__":
-#     response = suggest_trip(SUGGEST_TRIP_PROMPT_SAMPLE_INPUT)
-#     response = create_itinerary(ITINERARY_GENERATION_PROMPT_SAMPLE_INPUT)   
-#     create_markdown_file(response['response'])
+if __name__ == "__main__":
+    response = suggest_trip(SUGGEST_TRIP_PROMPT_SAMPLE_INPUT)
+    # response = create_itinerary(ITINERARY_GENERATION_PROMPT_SAMPLE_INPUT)   
+    create_markdown_file(response['response'])
