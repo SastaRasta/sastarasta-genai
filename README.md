@@ -50,7 +50,7 @@
     - group_size: The number of people going on the trip (Integer)
     - mode_of_arrival: The transport used to reach the end location (List of Strings or not given)
     - mode_of_transport: The transport used to travel around the destination location (List of Strings or not given)
-    - accomodation: The type of lodging where the travel group is staying (List of Strings or not given)
+    - accommodation: The type of lodging where the travel group is staying (List of Strings or not given)
     - objective: The reason for going on the trip for example business, adventure, relaxation, etc (List of Strings or not given)
     - food_preferences: The type of food the travellers want to try at their trip destination (List of Strings or not given)
     - extra_information: More information from user about how they are imagining this trip to add context (String)

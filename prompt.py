@@ -1,4 +1,5 @@
 from openai import OpenAI
+from re import match
 
 
 
@@ -64,6 +65,14 @@ def format_time(time):
     else:
         return f"{time} AM"
     
+
+def create_markdown_file(text):
+    with open("output.md", "w") as file:
+        for line in text.split("\n"):
+            if match(r'^\d+\.', line):
+                file.write("\n")
+            file.write(line + "\n")
+
 
 def parse_day_wise_plan(day_wise_plan: dict) -> str:
     DAY_WISE_PLAN_TEMPLATE = ""
@@ -255,3 +264,8 @@ def suggest_trip(suggest_trip_input):
     except Exception as e:
         with open("suggest_trip_prompt.txt", "w") as f:
             f.write(role_content + "\n" + prompt)
+
+# if __name__ == "__main__":
+#     response = suggest_trip(SUGGEST_TRIP_PROMPT_SAMPLE_INPUT)
+#     response = create_itinerary(ITINERARY_GENERATION_PROMPT_SAMPLE_INPUT)   
+#     create_markdown_file(response['response'])
