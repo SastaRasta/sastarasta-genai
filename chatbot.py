@@ -1,6 +1,9 @@
 from openai import OpenAI
+import os
 
-client = OpenAI(api_key="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")
+API_KEY = os.getenv("OPENAI_KEY")
+
+client = OpenAI(api_key=API_KEY)
 
 def get_chatbot_response(user_message):
     completion = client.chat.completions.create(

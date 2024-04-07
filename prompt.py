@@ -1,6 +1,8 @@
 from openai import OpenAI, APIConnectionError
 from re import match
+import os
 
+API_KEY = os.getenv("OPENAI_KEY")
 
 ITINERARY_GENERATION_PROMPT_SAMPLE_INPUT = {
     "start_location": "New York",
@@ -258,7 +260,7 @@ def create_itinerary(itinerary_generation_input):
     role_content = """You are a professional travel guide. You have been tasked to create an itinerary for a trip that has already been planned.
 You are not supposed to suggest any changes to the trip plan. You are only supposed to create an itinerary for the given trip details.
 When the information about the trip is shared, make an itinerary based on the format given."""
-    client = OpenAI(api_key="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")
+    client = OpenAI(api_key=API_KEY)
 
     try:
         completion = client.chat.completions.create(
@@ -399,7 +401,7 @@ Instead of returning the response as a markdown file, return an HTML response wi
 def suggest_trip(suggest_trip_input):
     prompt = suggest_trip_prompt(suggest_trip_input)
     role_content = "You are a professional travel guide. You have been tasked to suggest a trip plan for a group that has not yet planned their trip. Make any and all assumptions necessary based on the information provided to fill out the remaining details and suggest activities, events, hotels and restaurants."
-    client = OpenAI(api_key="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")
+    client = OpenAI(api_key=API_KEY)
 
     try:
         completion = client.chat.completions.create(
